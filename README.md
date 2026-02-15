@@ -51,9 +51,7 @@ The Mashup Generator follows a structured **six-step pipeline architecture**:
 
 Below is the screenshot of the web application interface:
 
-![Mashup Web Service UI](images/mashup_ui.png)
-
-> Make sure your screenshot file is placed inside an `images/` folder and named `mashup_ui.png`.
+![Mashup Web Service UI](Interface)
 
 ---
 
