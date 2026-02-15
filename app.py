@@ -1,26 +1,32 @@
 from flask import Flask, render_template, request, send_file
-import os, zipfile, subprocess
+import os, zipfile
+from mashup_core import process_mashup
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    # Requirements: Singer, # of videos, duration, email [cite: 28, 30, 32, 33]
-    return '''
-    <form action="/process" method="post">
-        Singer: <input name="singer"><br>
-        Videos (N > 10): <input name="n" type="number"><br>
-        Duration (Y > 20): <input name="y" type="number"><br>
-        Email: <input name="email" type="email"><br>
-        <input type="submit">
-    </form>
-    '''
+    return render_template('index.html') # Iska sundar UI nichhe hai
 
 @app.route('/process', methods=['POST'])
 def process():
-    # Process and send as ZIP [cite: 37]
-    # Logic to trigger 102303183.py and zip the result
-    return "Process started. Result will be zipped and sent."
+    singer = request.form.get('singer')
+    n = int(request.form.get('n'))
+    y = int(request.form.get('y'))
+    email = request.form.get('email')
+    
+    output_mp3 = "final_mashup.mp3"
+    zip_name = "mashup.zip"
+
+    try:
+        process_mashup(singer, n, y, output_mp3)
+        with zipfile.ZipFile(zip_name, 'w') as z:
+            z.write(output_mp3)
+        
+        # Note: Actual Email sending ke liye SMTP config chahiye hogi
+        return send_file(zip_name, as_attachment=True) 
+    except Exception as e:
+        return f"Error occurred: {str(e)}"
 
 if __name__ == "__main__":
     app.run(debug=True)
